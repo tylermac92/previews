@@ -24,9 +24,10 @@ jobs:
 
       - name: Build and push image
         run: |
-          IMAGE="ghcr.io/${{ github.repository }}/myapp:${{ github.sha }}"
-          docker build -t "$IMAGE" .
-          docker push "$IMAGE"
+          IMAGE_BASE="ghcr.io/${{ github.repository }}/myapp"
+          PR="pr-${{ github.event.pull_request.number }}"
+          docker build -f apps/myapp/Dockerfile -t "$IMAGE_BASE:$PR" .
+          docker push "$IMAGE_BASE:$PR"
 
       - name: Post preview URL
         uses: marocchino/sticky-pull-request-comment@v2
