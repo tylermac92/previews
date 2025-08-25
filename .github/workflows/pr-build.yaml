@@ -25,7 +25,7 @@ jobs:
       - name: Build and push image
         run: |
           IMAGE="ghcr.io/${{ github.repository }}/myapp:${{ github.sha }}"
-          docker build -t "$IMAGE" .
+          docker build -f apps/myapp/Dockerfile -t "$IMAGE" .
           docker push "$IMAGE"
 
       - name: Post preview URL
