@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: preview-environments
+  namespace: argocd
+spec:
+  generators:
+    - pullRequest:
+        github:
+          owner: tylermac92
+          repo: previews
+          tokenRef:
+            secretName: github-token
+            key: token
+        requeueAfterSeconds: 60
+  template:
+    metadata:
+      name: "preview-pr-{{ number }}"
+      labels:
+        env: preview
+        pr: "{{ number }}"
+    spec:
+      project: default
+      source:
+        repoURL: "https://github.com/tylermac92/previews.git"
+        targetRevision: "{{ head_sha }}"
+        path: "apps/myapp/chart"
+        helm:
+          valueFiles:
+            - values-preview.yaml
+          parameters:
+            - name: namespace
+              value: "preview-pr-{{ number }}"
+            - name: image.repository
+              value: "ghcr.io/tylermac92/previews/myapp"
+            - name: image.tag
+              value: "{{ head_sha }}"
+            - name: ingress.host
+              value: "pr-{{ number }}.127.0.0.1.sslip.io"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "preview-pr-{{ number }}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+
