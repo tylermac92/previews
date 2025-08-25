@@ -1,0 +1,19 @@
+namespace: ""
+env:
+  name: "preview"
+
+ingress:
+  enabled: true
+  className: nginx
+  host: ""
+
+db:
+  enabled: true
+  storage: 1Gi
+  passwordSecretName: app-db-credentials
+
+postgresql:
+  auth:
+    existingSecret: app-db-credentials
+    secretKeys:
+      adminPasswordKey: "password"

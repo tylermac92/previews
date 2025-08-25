@@ -1,0 +1,9 @@
+apiVersion: v2
+name: myapp
+version: 0.1.0
+type: application
+dependencies:
+  - name: postgresql
+    version: 15.5.23
+    repository: https://charts.bitnami.com/bitnami
+    condition: db.enabled

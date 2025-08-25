@@ -1,0 +1,33 @@
+namespace: default
+image:
+  repository: ghcr.io/tylermac92/previews/myapp
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+env:
+  name: "local"
+
+service:
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: false
+  className: nginx
+  host: ""
+
+db:
+  enabled: false
+  database: appdb
+  username: appuser
+  passwordSecretName: app-db-credentials
+  storage: 1Gi
+
+postgresql:
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+  auth:
+    database: appdb
+    username: appuser
