@@ -38,3 +38,17 @@ jobs:
 
             **URL:** https://pr-${{ github.event.pull_request.number }}.127.0.0.1.sslip.io
 
+  create-secret:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+          chmod +x kubectl && sudo mv kubectl /usr/local/bin/kubectl
+      - name: Kubeconfig (k3d on local only)
+        if: ${{ github.event.pull_request.head.repo.fork == false }}
+        run: |
+          echo "This step assumes the runner can reach your cluster API. For local dev runners, skip. For remote clusters, set KUBECONFIG via a secret."
+      - name: Skip (explanation)
+        run: echo "For a public GitHub runner, you can't reach your local k3d. Run this job from a self-hosted runner or move to External Secrets (next phase)."

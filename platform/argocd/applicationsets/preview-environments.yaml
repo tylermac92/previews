@@ -37,6 +37,12 @@ spec:
               value: "pr-{{ number }}"
             - name: ingress.host
               value: "pr-{{ number }}.127.0.0.1.sslip.io"
+            - name: db.enabled
+              value: "true"
+            - name: postgresql.auth.existingSecret
+              value: "app-db-credentials"
+            - name: env.name
+              value: "preview"
       destination:
         server: https://kubernetes.default.svc
         namespace: "preview-pr-{{ number }}"
